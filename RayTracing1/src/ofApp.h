@@ -40,7 +40,11 @@ public:
 	Sphere(glm::vec3 p, float r, ofColor diffuse = ofColor::lightGray) { position = p; radius = r; diffuseColor = diffuse; }
 	Sphere() {}
 	bool intersect(const Ray& ray, glm::vec3& point, glm::vec3& normal) {
-		return (glm::intersectRaySphere(ray.p, ray.d, position, radius, point, normal));
+		bool ret = glm::intersectRaySphere(ray.p, ray.d, position, radius, point, normal);
+		// if intersectRaySphere returns 0 for normal, override it with correct normal
+		if (normal[0] == 0 && normal[1] == 0 && normal[2] == 0)
+			normal = glm::normalize(point - position);
+		return ret;
 	}
 	void draw() {
 		ofDrawSphere(position, radius);
@@ -190,8 +194,8 @@ class ofApp : public ofBaseApp{
 
 		vector<SceneObject*> scene;
 
-		int imageWidth = 600;
-		int imageHeight = 400;
+		int imageWidth = 1200;
+		int imageHeight = 800;
 		char* imageFile;
 
 		glm::vec3 lightPos;

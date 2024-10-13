@@ -129,10 +129,10 @@ void ofApp::setup(){
 
 	// point light source position
 	lightPos.x = 0;
-	lightPos.y = 0;
-	lightPos.z = 5;
+	lightPos.y = 10;
+	lightPos.z = 0;
 	lightIntensity = 1;
-	ambientIntensity = 0.5;
+	ambientIntensity = 0.05;
 }
 
 //--------------------------------------------------------------
@@ -188,13 +188,9 @@ void ofApp::drawImage()
 
 			// translate (u,v) position to 3D world position
 			glm::vec3 pixelPos = renderCam.view.toWorld(u, v);
-			//cout << "Pixel (" << x << "," << y << ") pos(" << u << ", " << v << ") = (" << pixelPos.x << ", " << pixelPos.y << ", " << pixelPos.z << ")" << endl;
-
+			
 			// create ray from camera position to image pixel position
-			glm::vec3 camPos = mainCam.getPosition();
-			Ray cameraToImage = Ray(camPos, glm::normalize(pixelPos - camPos));
-			//cout << "camPos = " << camPos << "; pixelPos = " << pixelPos << endl;
-			//cout << "cam ray p = " << cameraToImage.p << "; d = " << cameraToImage.d << endl;
+			Ray cameraToImage = renderCam.getRay(u, v);
 
 			// find intersection point and normal of closest object to camera/image
 			glm::vec3 intersectPos;
@@ -205,8 +201,11 @@ void ofApp::drawImage()
 				// if closest object to camera/image is not blocked from light source
 				if (isClearLineOfSight(lightPos, intersectPos))
 				{
+					// move intersection point a tiny distance from the surface
+					intersectPos = intersectPos + intersectNorm * 0.01;
+					glm::vec3 object2Light = lightPos - intersectPos;
 					// create ray from intersection point to light source
-					Ray lightRay = Ray(intersectPos, glm::normalize(lightPos - intersectPos));
+					Ray lightRay = Ray(intersectPos, glm::normalize(object2Light));
 					// lightRay direction and intersectNorm should both be unit length
 
 					// calculate dot product between light ray and normal
@@ -218,6 +217,9 @@ void ofApp::drawImage()
 					ofColor diffuseCoef = intersectScene->diffuseColor;
 					// calculate the Lambertian shading
 					ofColor Ld = diffuseCoef * diffuseDot * lightIntensity;
+					// Scale by distance from light source to intersection point
+					//cout << "dist2 " << glm::dot(object2Light, object2Light) << endl;
+					Ld = Ld / (0.01 * glm::dot(object2Light, object2Light));
 					L = L + Ld;
 					//cout << "Ld = (" << (int)Ld.r << "," << (int)Ld.g << "," << (int)Ld.b << ")" << endl;
 				}
@@ -231,11 +233,10 @@ void ofApp::drawImage()
 				float dist2 = glm::dot(pixelToIntersect, pixelToIntersect);
 
 				// Scale the combined shading intensity by distance
-				//L = L / dist2;
+				//L = L / dist2 * 20;
 			}
 			// Store in image pixel
-			//cout << "L[" << x << "," << y << "] = " << (int)L.r << ", " << (int)L.g << ", " << (int)L.b << endl;
-			image.setColor(x, y, L);
+			image.setColor(imageWidth - x - 1, imageHeight - y - 1, L);		// invert image
 		}
 	}
 	// Save image to file
@@ -265,18 +266,16 @@ SceneObject* ofApp::findIntersection(const Ray& ray, glm::vec3& intersectPos, gl
 		if (scene[i]->intersect(ray, p, n))
 		{
 			// calculate squared distance from ray to intersection point
-			glm::vec3 rayToPoint = ray.p - p;
+			glm::vec3 rayToPoint = p - ray.p;
 			float dist2 = glm::dot(rayToPoint, rayToPoint);
 			// if distance is less than current closest object's distance
 			if (dist2 < minDist2)
 			{
 				// save the new closest object, intersection position, and normal
+				minDist2 = dist2;
 				intersectScene = scene[i];
 				intersectPos = p;
-				// recalculate normal since intersect() returns 0 for n
-				intersectNorm = glm::normalize(p - scene[i]->position);
-				//cout << "Found object (scene[" << i << "]) at dist^2 = " << dist2 << endl;
-				//cout << "Intersect pos = " << intersectPos << "; Normal = " << intersectNorm << endl;
+				intersectNorm = n;
 			}
 		}
 	}
