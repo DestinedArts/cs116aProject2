@@ -10,7 +10,25 @@ Create your own Ray Tracer (renderer) that can render simple primitive shapes an
 **Code Editor**: Visual Studio<br>
 **Library**: OpenGL (openFrameworks)
 
+## Examples<br>
+* SA Game Models: https://sa-game-remake.tumblr.com/post/697635182338048000/
+  * Assets/Mesh: https://drive.proton.me/urls/VFG903EZWG#eXmnNUPduNoS
+
 ### Notes<br>
 random notes taken during class
 
+\<image\> API
+```
+// declared image
+ofImage image;
+
+image.allocate(); allocate space for new images, do black and white height x with x 1 bit; color need more parameters
+image.setColor(color,x,y)
+image.save("<pathname>");
+"images/random.png"
+image.load("");  // assumes image in default PROJECT/bin/data if nothing before images
+image.getWidth
+image.getHEight
+image.draw(x,y)  // draw after cam.end();
+```
 Part 1: Top part of spheres grainy because resolution is low. Increase resolution more than 1200x800 to decrease grainyness.
