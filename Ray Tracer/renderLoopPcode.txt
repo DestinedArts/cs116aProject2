@@ -1,0 +1,98 @@
+
+// Assumptions
+//
+//  we are rendering an ofImage  (part of OpenFrameworks)
+//  we have allocated an image to render  that is Nx x Ny in size
+//    see ofImage::allocate
+//
+
+Pseudo Code
+
+RayTrace()     
+
+
+for each j  (row)  until j = Ny
+	for each i  (columnn)  until i = Nx
+
+	//
+	//  convert each i, j to (u, v)
+
+	// Nx  (image resolution in X)
+	// Ny  (image resolution in Y)
+	// See Raycaster
+
+	u = (i + 0.5 ) / Nx;
+	v = (j + 0.5) / Ny;
+
+	// see Raycaster
+	//
+	ray = camera.getRay( u, v)
+
+	hit = false;
+
+	distance = infinity;   // you can initialize to a very big number OR  std::numeric_limits<float>::infinity();
+
+	closestObject = NULL;
+
+	for each obj in scene 
+
+	    // determine if we hit the object and save closest obj
+	    // record in a variable "closestObject"
+	    // record closest distance
+
+		if (obj.intersect( ray, -> intersectPoint, -> normal )) 
+		   determine if object is closest
+
+		if (closestObject) hit = true;
+	
+	if (hit)
+
+	    // so somethign if hit
+	    // obj was closest object hit
+
+	    color = obj.diffuseColor;
+
+	    //  
+	    //
+
+	    image.setColor( i, j, color );
+
+	    //  is image upside down ?
+	    //  "flip"  
+
+     else
+
+        image.setColor(i, j, backgroundColor)
+
+
+ -->  don't forget to save image...
+
+      see ofImage functions:
+
+      image.load();
+      image.save();
+      image.allocate();
+
+
+
+
+
+
+
+
+
+
+
+
+		
+		
+
+
+
+
+
+
+
+
+    
+
