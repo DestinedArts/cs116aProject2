@@ -10,9 +10,14 @@ Create your own Ray Tracer (renderer) that can render simple primitive shapes an
 **Code Editor**: Visual Studio<br>
 **Library**: OpenGL (openFrameworks)
 
-## Examples<br>
+## Examples
 * SA Game Models: https://sa-game-remake.tumblr.com/post/697635182338048000/
   * Assets/Mesh: https://drive.proton.me/urls/VFG903EZWG#eXmnNUPduNoS
+
+## Future Additions
+* use Lab 2, drag sphere instead of manually moving coordinates
+* sliders for diffuse, ambient, etc. many variables
+* project image on to view plane
 
 ### Notes<br>
 random notes taken during class
