@@ -40,6 +40,9 @@ Cam: gives vector and tells camera to look at from this vector
 
 Part 1: Top part of spheres grainy because resolution is low. Increase resolution more than 1200x800 to decrease grainyness.
 
+Part 3: Print few lines of u, v. Convert to i, j. Try a single tile map first.
+
+
 ### TO-DO:
 * use Lab 2, drag sphere instead of manually moving coordinates
 * sliders for diffuse, ambient, etc. many variables
